@@ -52,10 +52,12 @@ func PrintFile(service *drive.Service, fileID string) error {
 
 }
 
-func GetFilesID(service *drive.Service, name string) (ids []string, err error) {
-	list, err := service.Files.List().Q("name='" + name + "'").Do()
+// GetIdsByName Get file's ID
+func GetIdsByName(service *drive.Service, name string) (ids []string, err error) {
+	q := "name = '" + name + "'"
+	list, err := service.Files.List().Q(q).Do()
 	if err != nil {
-		log.Printf("Ocurrió un error GetFilesID(%s): %v", name, err.Error())
+		log.Printf("Ocurrió un error GetIdsByName(%s): %v", name, err.Error())
 		return nil, err
 	}
 	for _, f := range list.Files {
@@ -110,12 +112,15 @@ func main() {
 	// Step 3: Create directory
 	// dir, err := createFolder(srv, "New Folder", "root")
 
-	if err != nil {
-		panic(fmt.Sprintf("No se pudo crear el directorio: %v\n", err))
-	}
+	// if err != nil {
+	// 	panic(fmt.Sprintf("No se pudo crear el directorio: %v\n", err))
+	// }
 
 	//give your drive folder id here in which you want to upload or create a new directory
-	folderId := "1jzeyuwpA8R-WG7mcdbB8eCIm1JF8i4rJ"
+	folderId, err := GetIdsByName(srv, "módulo")
+	if err != nil {
+		panic(fmt.Sprintf("No se encontro la carpeta", err))
+	}
 
 	// Step 4: create the file and upload
 	file, err := createFile(srv, f.Name(), "application/octet-stream", f, folderId)
@@ -143,6 +148,11 @@ func main() {
 		panic(fmt.Sprintf("No se pudo renombrar el archivo: %v", err.Error()))
 
 	}
+
+	ids, _ := GetIdsByName(srv, "diapo")
+
+	fmt.Println("Ids ->", ids)
+
 	//<--- This is not working --->
 	//Download File
 	// err = DownloadFile(srv, "1PdQELlDjren_Yt7mJyx4cXkBytt5VlbbCnqHn_tgiI0", "application/vnd.oasis.opendocument.text")
