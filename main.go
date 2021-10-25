@@ -123,7 +123,7 @@ func main() {
 	}
 
 	// Step 4: create the file and upload
-	file, err := createFile(srv, f.Name(), "application/octet-stream", f, folderId)
+	file, err := createFile(srv, f.Name(), "application/octet-stream", f, folderId[1])
 
 	if err != nil {
 		panic(fmt.Sprintf("No se pudo crear el archivo: %v\n", err))
